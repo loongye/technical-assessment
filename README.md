@@ -36,4 +36,58 @@ In your submission, must include the following:
 # Other notes
 
 - You will be expected to run and demo your application running the docker compose file during the interview.
-- During the demo, two browser tabs/windows should be opened and you will be required to perform the conflicting uploads simultaneously. You must explain every design decision in their conflict resolution strategy.
+
+---
+
+# Setup and Run Instructions
+
+## 1. Prerequisites
+- [Docker](https://www.docker.com/) and Docker Compose installed.
+- [Bun](https://bun.sh/) (optional, for local tests).
+
+## 2. Quick Start (Docker)
+This will start the database, server, and client all at once.
+```bash
+docker-compose up --build
+```
+- Frontend: [http://localhost:3000](http://localhost:3000)
+- Backend: [http://localhost:4000](http://localhost:4000)
+
+## 3. Running Unit Tests
+We use `bun test` for fast and reliable unit testing.
+```bash
+cd server
+bun test
+```
+
+## 4. Local Development (Manual)
+If you prefer to run components manually:
+1.  **Database**: Start a PostgreSQL instance.
+2.  **Server**:
+    ```bash
+    cd server
+    bun install
+    # Update DATABASE_URL in .env
+    bunx prisma db push
+    bun run index.ts
+    ```
+3.  **Client**:
+    ```bash
+    cd client
+    bun install
+    bun dev
+    ```
+
+## 🎥 Demo Walkthrough
+
+1.  **Initial Load**: Open [http://localhost:3000](http://localhost:3000) in two separate windows.
+2.  **Seeding Data**: In Tab A, upload the provided `data.csv`. Both tabs will sync and display the data.
+3.  **Triggering Conflict**: 
+    - Edit `data.csv` locally (e.g., change the `name` of record #1).
+    - In Tab B, upload the modified `data.csv`.
+4.  **Resolving**: 
+    - Only Tab B (the uploader) will see the **Conflict Management** UI.
+    - Use the **Toggle Switch** to choose which version to keep.
+    - Review the **Final Result Preview**.
+    - Click **Apply All Resolutions**.
+5.  **Verification**: Tab A will automatically refresh to show the resolved data.
