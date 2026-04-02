@@ -11,11 +11,12 @@ const socket = io(API_URL);
 function App() {
   const [posts, setPosts] = useState<any[]>([]);
   const [pagination, setPagination] = useState({ page: 1, limit: 10, total: 0, totalPages: 1 });
-  const [search, setSearch] = useState('');
+  const [searchTerm, setSearchTerm] = useState('');
+  const [debouncedSearch, setDebouncedSearch] = useState('');
   const [conflicts, setConflicts] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
 
-  const fetchPosts = useCallback(async (page = pagination.page, query = search) => {
+  const fetchPosts = useCallback(async (page = pagination.page, query = debouncedSearch) => {
     setLoading(true);
     try {
       const response = await fetch(`${API_URL}/api/posts?page=${page}&limit=${pagination.limit}&search=${query}`);
@@ -27,7 +28,15 @@ function App() {
     } finally {
       setLoading(false);
     }
-  }, [pagination.page, pagination.limit, search]);
+  }, [pagination.page, pagination.limit, debouncedSearch]);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearch(searchTerm);
+    }, 300);
+
+    return () => clearTimeout(timer);
+  }, [searchTerm]);
 
   useEffect(() => {
     fetchPosts();
@@ -42,7 +51,7 @@ function App() {
   }, [fetchPosts]);
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearch(e.target.value);
+    setSearchTerm(e.target.value);
     setPagination({ ...pagination, page: 1 });
   };
 
@@ -72,7 +81,7 @@ function App() {
               placeholder="Search posts by name, email or content..."
               className="input"
               style={{ width: '100%', paddingLeft: '3rem' }}
-              value={search}
+              value={searchTerm}
               onChange={handleSearchChange}
             />
           </div>
