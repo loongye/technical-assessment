@@ -66,8 +66,8 @@ function App() {
           <h1 style={{ fontSize: '2.5rem', marginBottom: '0.5rem' }}>DataHub</h1>
           <p style={{ color: 'var(--text-muted)' }}>CSV Management & Collaborative Platform</p>
         </div>
-        <Uploader 
-          onUploadComplete={() => fetchPosts(1)} 
+        <Uploader
+          onUploadComplete={() => fetchPosts(1)}
           onConflicts={(newConflicts) => setConflicts(newConflicts)}
         />
       </header>
@@ -80,7 +80,7 @@ function App() {
               type="text"
               placeholder="Search posts by name, email or content..."
               className="input"
-              style={{ width: '100%', paddingLeft: '3rem' }}
+              style={{ width: 'calc(100% - 4rem)', paddingLeft: '3rem' }}
               value={searchTerm}
               onChange={handleSearchChange}
             />
@@ -99,9 +99,9 @@ function App() {
       </div>
 
       {conflicts.length > 0 && (
-        <DiffViewer 
-          conflicts={conflicts} 
-          onClose={() => setConflicts([])} 
+        <DiffViewer
+          conflicts={conflicts}
+          onClose={() => setConflicts([])}
           onResolve={() => {
             setConflicts([]);
             fetchPosts();
